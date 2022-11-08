@@ -1,20 +1,17 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
+const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core')
+const { readSchema } = require('./schema.js')
+const { resolvers } = require('./resolvers.js')
 
-const typeDefs = gql`
-type Query {
-  appName: String
-}
-`
 
-const resolvers = {
-  Query: {
-    appName: () => 'ProductHunt clone'
-  },
-}
+const typeDefs = readSchema()
 
 const server = new ApolloServer({
-  typeDefs: typeDefs, // schema for our GraphQL API
-  resolvers: resolvers, // implementation of queries and types
+  typeDefs,
+  resolvers,
+  plugins: [
+    ApolloServerPluginLandingPageGraphQLPlayground(),
+  ],
 })
 
 server.listen().then(() => {
