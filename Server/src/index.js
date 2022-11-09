@@ -3,6 +3,7 @@ const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-serve
 const { readSchema } = require('./schema.js')
 const { resolvers } = require('./resolvers.js')
 
+require('./mongo.js')
 
 const typeDefs = readSchema()
 
@@ -12,6 +13,7 @@ const server = new ApolloServer({
   plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ],
+  // debug: false,
 })
 
 server.listen().then(() => {

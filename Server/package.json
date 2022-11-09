@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "db:up": "docker-compose up",
-    "db:seed": "seed -u 'mongodb://user:pass@127.0.0.1:27017/products-db' --db-name products-db --drop-database ./data"
+    "db:seed": "seed -u mongodb://127.0.0.1:27017/products-db --db-name products-db --drop-database ./data"
   },
   "author": "",
   "dependencies": {

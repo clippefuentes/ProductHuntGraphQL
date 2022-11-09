@@ -1,8 +1,14 @@
 type Query {
   appName: String,
   allProducts: [Product!]!,
-  productsByAuthor(authorName: String!): [Product!]!
-  productsByCategory(slug: String!): [Product!]!
+  productsByAuthor(authorName: String!): [Product!]!,
+  productsByCategory(slug: String!): [Product!]!,
+  allCategories: [Category!]!
+}
+
+type Mutation {
+  createProduct(input: NewProduct): Product
+  createCategory(input: NewCategory!): Category!
 }
 
 type Product {
@@ -22,7 +28,26 @@ type User {
 }
 
 type Category {
-  id: Int!
+  id: ID!
+  slug: String!
+  name: String!
+}
+
+input NewProduct {
+  name: String!,
+  description: String!,
+  url: String!,
+  categoriesIds: [ID!]!,
+}
+
+input NewProduct {
+  name: String!,
+  description: String!,
+  url: String!,
+  categoriesIds: [ID!]!,
+}
+
+input NewCategory {
   slug: String!
   name: String!
 }
