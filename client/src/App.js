@@ -16,6 +16,7 @@ import ProductsByUser from './components/ProductsByUser'
 import ProductsInCategory from './components/ProductsInCategory'
 import NewProduct from './components/NewProduct'
 
+
 const cache = createCache({
   key: 'css',
   prepend: true,
@@ -28,6 +29,8 @@ const theme = createTheme({
     }
   }
 })
+
+
 
 function App() {
   return (

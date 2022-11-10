@@ -8,8 +8,9 @@ const User = require('./models/User.js')
 const resolvers = {
   Query: {
     appName: () => 'ProductHunt clone',
-    allProducts: () => {
-      return Product.find({})
+    allProducts: async () => {
+      const products = await Product.find({})
+      return products
     },
     productsByCategory: async (_, { slug }) => {
       const category = await Category.findOne({ slug })
@@ -32,6 +33,9 @@ const resolvers = {
     },
   },
   Product: {
+    id: (product) => {
+      return product._id
+    },
     author: (product) => {
       return User.findById(product.authorId)
     },

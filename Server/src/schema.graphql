@@ -19,6 +19,7 @@ type Product {
   publishedAt: String!,
   author: User!,
   categories: [Category!]!
+  id: ID!
 }
 
 type User {
