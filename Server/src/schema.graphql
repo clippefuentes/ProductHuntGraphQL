@@ -9,6 +9,8 @@ type Query {
 type Mutation {
   createProduct(input: NewProduct): Product
   createCategory(input: NewCategory!): Category!
+  upvoteProduct(productId: String!): Product
+  logIn(username: String!, password: String!)
 }
 
 type Product {

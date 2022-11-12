@@ -10,7 +10,8 @@ const ProductSchema = new Schema({
   publishedAt: Date,
   authorId: Schema.Types.ObjectId,
   categoriesIds: [Schema.Types.ObjectId],
-  _id: Schema.Types.ObjectId,
+  // _id: Schema.Types.ObjectId,
+  // _id: mongoose.Schema.Types.ObjectId,
 })
 
 module.exports = mongoose.model('Product', ProductSchema) 

@@ -60,7 +60,6 @@ const resolvers = {
         categoriesIds: input.categoriesIds,
       });
     },
-
     createCategory: async(_, { input } ) => {
       errors = []
       if (!input.user) {
@@ -85,7 +84,14 @@ const resolvers = {
         slug: input.slug,
         name: input.name,
        });
-    }
+    },
+    upvoteProduct: async(_, { productId } ) => {
+      return Product.findOneAndUpdate(
+        {_id: productId},
+        {$inc : {'numberOfVotes' : 1}},
+        {new: true}
+      )
+    },
   }
 }
 
