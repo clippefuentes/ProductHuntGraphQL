@@ -1,5 +1,8 @@
-const mongoose = require('mongoose')
-const { UserInputError } = require('apollo-server');
+const { UserInputError, AuthenticationError } = require('apollo-server-express');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const { JWT_SECRET } = require('./auth.js')
 
 const Product = require('./models/Product.js')
 const Category = require('./models/Category.js')
@@ -48,19 +51,24 @@ const resolvers = {
     },
   },
   Mutation: {
-    createProduct: async (_, { input }) => {
-      const author = await User.findOne({ userName: "ellen" })
+    createProduct: async (_, { input }, { userId }) => {
+      if (!userId) {
+        throw new AuthenticationError('Authentication required')
+      }
       return Product.create({
         name: input.name,
         description: input.description,
         url: input.url,
         numberOfVotes: 0,
         publishedAt: Date.now(),
-        authorId: author._id,
+        authorId: userId,
         categoriesIds: input.categoriesIds,
       });
     },
-    createCategory: async(_, { input } ) => {
+    createCategory: async (_, { input }) => {
+      if (!userId) {
+        throw new AuthenticationError('Authentication required')
+      }
       errors = []
       if (!input.user) {
         errors.push({
@@ -83,15 +91,64 @@ const resolvers = {
       return Category.create({
         slug: input.slug,
         name: input.name,
-       });
+      });
     },
-    upvoteProduct: async(_, { productId } ) => {
+    upvoteProduct: async (_, { productId }, { userId }) => {
+      if (!userId) {
+        throw new AuthenticationError('Authentication required')
+      }
+
       return Product.findOneAndUpdate(
-        {_id: productId},
-        {$inc : {'numberOfVotes' : 1}},
-        {new: true}
+        { _id: productId },
+        { $inc: { 'numberOfVotes': 1 } },
+        { new: true }
       )
     },
+    login: async (_, { userName, password }, context) => {
+      console.log('userName, password ', userName, password )
+      const user = await User.findOne({
+        userName
+      })
+
+      if (!user) {
+        throw new AuthenticationError('Invalid credentials')
+      }
+
+      if (!bcrypt.compare(password, user.passwordHash)) {
+        throw new AuthenticationError('Invalid credentials')
+      }
+
+      const jwtStr = jwt.sign(
+        {
+          userId: user.id
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      )
+
+      const expiresIn = 60 * 60 * 1000;
+      console.log('expiresIn', expiresIn)
+      context.res.cookie('authCookie', jwtStr, {
+        maxAge: expiresIn,
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
+      })
+
+      return {
+        expiresIn,
+        user,
+      }
+    },
+    logOut: async (_, __, { res }) => {
+      res.clearCookie('authCookie', {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
+      })
+      return true
+    }
   }
 }
 
