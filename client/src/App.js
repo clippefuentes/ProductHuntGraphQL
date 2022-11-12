@@ -15,6 +15,7 @@ import AllProducts from './components/AllProducts'
 import ProductsByUser from './components/ProductsByUser'
 import ProductsInCategory from './components/ProductsInCategory'
 import NewProduct from './components/NewProduct'
+import Login from './components/Login'
 
 
 const cache = createCache({
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/author/:userName" element={<ProductsByUser />} />
                 <Route path="/category/:slug" element={<ProductsInCategory /> } />
                 <Route path="/" element={<AllProducts />} />
+                <Route path="/login" element={<Login />} />
               </Routes>
             </Layout>
           </div>

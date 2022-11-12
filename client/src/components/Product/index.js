@@ -1,4 +1,5 @@
 import React from 'react'
+import { useQuery, gql, useMutation } from '@apollo/client'
 import { Typography, Grid } from '@mui/material'
 import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
@@ -12,8 +13,17 @@ import {
   Link,
 } from 'react-router-dom'
 
+const UPVOTE_PRODUCT = gql`
+  mutation Mutation($productId: String!) {
+    upvoteProduct(productId: $productId) {
+      numberOfVotes
+    }
+  }
+`
+
 function ProjectCard(props) {
   const {
+    id,
     publishedAt,
     name,
     url,
@@ -22,6 +32,21 @@ function ProjectCard(props) {
     categories,
     numberOfVotes
   } = props.product
+
+  const [
+    mutateFunction,
+    {
+      loading,
+    }
+  ] = useMutation(
+    UPVOTE_PRODUCT,
+    {
+      refetchQueries: [
+        'AllProducts',
+      ],
+    }
+  )
+
   return (
     <Grid item xs={12} md={12}>
       <Paper sx={{ p: 2, margin: 'auto', flexGrow: 1 }}>
@@ -89,8 +114,20 @@ function ProjectCard(props) {
                 container
                 alignItems="center"
                 direction="column">
-
-                <IconButton aria-label="vote up">
+                <IconButton
+                  aria-label="vote up"
+                  onClick={() => {
+                    // TODO: Call a mutation here
+                    console.log(`Upvoting product with ID ${id}`)
+                    mutateFunction({
+                      variables: {
+                        productId: id,
+                      }
+                    })
+                  }}
+                  // disabled={false}
+                  disabled={loading}
+                >
                   <ArrowUpwardIcon />
                 </IconButton>
                 <Chip

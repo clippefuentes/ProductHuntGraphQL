@@ -1,32 +1,9 @@
 import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography'
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 
-import allProducts from '../test-data'
+import { GET_ALL_PRODUCTS } from '../queries'
 import ProductsList from '../ProductsList'
-
-const GET_ALL_PRODUCTS = gql`
-query {
-  allProducts {
-    id
-    description
-    name
-    url
-    numberOfVotes
-    publishedAt
-    author {
-      id
-      userName
-      fullName
-    }
-    categories {
-      id
-      slug
-      name
-    }
-  }
-}
-`
 
 export default function AllProducts() {
   const {
